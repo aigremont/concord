@@ -151,6 +151,7 @@ public:
         BUTTON_TEAR_OFF,
         BUTTON_DOCK,
         BUTTON_HELP,
+        BUTTON_PIN,
         BUTTON_COUNT
     };
 
@@ -176,6 +177,7 @@ public:
                                 save_visibility,
                                 save_dock_state,
                                 can_dock,
+                                can_pin,
                                 show_title,
                                 auto_close;
 
@@ -198,6 +200,7 @@ public:
 // [/SL:KB]
                                 tear_off_image,
                                 dock_image,
+                                pin_image,
                                 help_image;
         Optional<LLUIImage*>    close_pressed_image,
                                 restore_pressed_image,
@@ -207,6 +210,7 @@ public:
 // [/SL:KB]
                                 tear_off_pressed_image,
                                 dock_pressed_image,
+                                pin_pressed_image,
                                 help_pressed_image;
 
         Optional<CommitCallbackParam> open_callback,
@@ -377,6 +381,13 @@ public:
 
     virtual void    setTornOff(bool torn_off) { mTornOff = torn_off; }
     bool isTornOff() const { return mTornOff; }
+
+    // EVE-style pin: a pinned floater keeps its position and size until
+    // unpinned. It can still be closed.
+    bool            isPinnable() const { return mCanPin; }
+    void            setCanPin(bool b);
+    bool            isPinned() const { return mPinned; }
+    void            setPinned(bool pinned);
     void setOpenPositioning(LLFloaterEnums::EOpenPositioning pos) {mPositioning = pos;}
 
 
@@ -399,6 +410,7 @@ public:
 // [/SL:KB]
     static void     onClickTearOff(LLFloater* floater);
     static void     onClickDock(LLFloater* floater);
+    static void     onClickPin(LLFloater* floater);
     static void     onClickHelp(LLFloater* floater);
 // [SL:KB] - Patch: UI-FloaterCollapse | Checked: Catznip-3.2
     static void     handleShowCollapseButtonChanged(const LLSD& sdValue);
@@ -583,6 +595,8 @@ private:
     bool            mCanDock;
     bool            mDocked;
     bool            mTornOff;
+    bool            mCanPin;
+    bool            mPinned;
 
     static LLMultiFloater* sHostp;
     static bool     sQuitting;

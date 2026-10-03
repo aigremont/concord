@@ -88,7 +88,8 @@ std::string LLFloater::sButtonNames[BUTTON_COUNT] =
     "llfloater_minimize_btn",   //BUTTON_MINIMIZE
     "llfloater_tear_off_btn",   //BUTTON_TEAR_OFF
     "llfloater_dock_btn",       //BUTTON_DOCK
-    "llfloater_help_btn"        //BUTTON_HELP
+    "llfloater_help_btn",       //BUTTON_HELP
+    "llfloater_pin_btn"         //BUTTON_PIN
 };
 
 std::string LLFloater::sButtonToolTips[BUTTON_COUNT];
@@ -107,7 +108,8 @@ std::string LLFloater::sButtonToolTipsIndex[BUTTON_COUNT]=
     "BUTTON_MINIMIZE",      //"Minimize",   //BUTTON_MINIMIZE
     "BUTTON_TEAR_OFF",      //"Tear Off",   //BUTTON_TEAR_OFF
     "BUTTON_DOCK",
-    "BUTTON_HELP"
+    "BUTTON_HELP",
+    "BUTTON_PIN"
 };
 
 LLFloater::click_callback LLFloater::sButtonCallbacks[BUTTON_COUNT] =
@@ -120,7 +122,8 @@ LLFloater::click_callback LLFloater::sButtonCallbacks[BUTTON_COUNT] =
     LLFloater::onClickMinimize, //BUTTON_MINIMIZE
     LLFloater::onClickTearOff,  //BUTTON_TEAR_OFF
     LLFloater::onClickDock,     //BUTTON_DOCK
-    LLFloater::onClickHelp      //BUTTON_HELP
+    LLFloater::onClickHelp,     //BUTTON_HELP
+    LLFloater::onClickPin       //BUTTON_PIN
 };
 
 // [SL:KB] - Patch: UI-FloaterCollapse | Checked: Catznip-3.2
@@ -208,6 +211,7 @@ LLFloater::Params::Params()
     save_rect("save_rect", false),
     save_visibility("save_visibility", false),
     can_dock("can_dock", false),
+    can_pin("can_pin", false),
     show_title("show_title", true),
     auto_close("auto_close", false),
     positioning("positioning", LLFloaterEnums::POSITIONING_RELATIVE),
@@ -223,6 +227,7 @@ LLFloater::Params::Params()
 // [/SL:KB]
     tear_off_image("tear_off_image"),
     dock_image("dock_image"),
+    pin_image("pin_image"),
     help_image("help_image"),
     close_pressed_image("close_pressed_image"),
     restore_pressed_image("restore_pressed_image"),
@@ -232,6 +237,7 @@ LLFloater::Params::Params()
 // [/SL:KB]
     tear_off_pressed_image("tear_off_pressed_image"),
     dock_pressed_image("dock_pressed_image"),
+    pin_pressed_image("pin_pressed_image"),
     help_pressed_image("help_pressed_image"),
     open_callback("open_callback"),
     close_callback("close_callback"),
@@ -322,6 +328,8 @@ LLFloater::LLFloater(const LLSD& key, const LLFloater::Params& p)
     mCanDock(false),
     mDocked(false),
     mTornOff(false),
+    mCanPin(false),
+    mPinned(false),
     mHasBeenDraggedWhileMinimized(false),
     mPreviousMinimizedBottom(0),
     mPreviousMinimizedLeft(0),
@@ -399,6 +407,11 @@ void LLFloater::initFloater(const Params& p)
     if(mCanDock)
     {
         mButtonsEnabled[BUTTON_DOCK] = true;
+    }
+
+    if (mCanPin)
+    {
+        mButtonsEnabled[BUTTON_PIN] = true;
     }
 
     buildButtons(p);
@@ -1414,6 +1427,35 @@ void LLFloater::handleReshape(const LLRect& new_rect, bool by_user)
                 floaterp->setShape(dependent_rect, by_user);
             }
         }
+
+        // A sibling the user snapped onto this floater follows it when the
+        // user moves it (not resizes it), the way snapped windows do in EVE.
+        // Dependents were handled above; the others are only translated,
+        // which does not come back through handleReshape.
+        if (by_user
+            && settled_rect.getWidth() == old_rect.getWidth()
+            && settled_rect.getHeight() == old_rect.getHeight())
+        {
+            const S32 dx = settled_rect.mLeft - old_rect.mLeft;
+            const S32 dy = settled_rect.mBottom - old_rect.mBottom;
+            LLFloaterView* floater_view = getParentAs<LLFloaterView>();
+            if ((dx != 0 || dy != 0) && floater_view)
+            {
+                for (LLView* child : *floater_view->getChildList())
+                {
+                    LLFloater* sibling = dynamic_cast<LLFloater*>(child);
+                    if (!sibling
+                        || sibling == this
+                        || sibling->isMinimized()
+                        || sibling->getDependee() == this
+                        || sibling->getSnapTarget().get() != this)
+                    {
+                        continue;
+                    }
+                    sibling->translate(dx, dy);
+                }
+            }
+        }
     }
     else
     {
@@ -1920,6 +1962,7 @@ bool LLFloater::handleMouseDown(S32 x, S32 y, MASK mask)
         if(offerClickToButton(x, y, mask, BUTTON_RESTORE)) return true;
         if(offerClickToButton(x, y, mask, BUTTON_TEAR_OFF)) return true;
         if(offerClickToButton(x, y, mask, BUTTON_DOCK)) return true;
+        if(offerClickToButton(x, y, mask, BUTTON_PIN)) return true;
 
         setFrontmost(true, false);
         // Otherwise pass to drag handle for movement
@@ -2084,6 +2127,38 @@ void LLFloater::setDocked(bool docked, bool pop_on_undock)
 
 }
 
+void LLFloater::setCanPin(bool b)
+{
+    if (b != mCanPin)
+    {
+        mCanPin = b;
+        mButtonsEnabled[BUTTON_PIN] = mCanPin;
+        if (!mCanPin && mPinned)
+        {
+            setPinned(false);
+        }
+    }
+    updateTitleButtons();
+}
+
+// EVE-style pin: lock the floater's position and size. Closing stays allowed.
+void LLFloater::setPinned(bool pinned)
+{
+    if (pinned == mPinned)
+    {
+        return;
+    }
+    mPinned = pinned;
+
+    setCanDrag(!mPinned);
+    enableResizeCtrls(!mPinned && mResizable, mResizableWidth, mResizableHeight);
+
+    if (mButtons[BUTTON_PIN])
+    {
+        mButtons[BUTTON_PIN]->setToggleState(mPinned);
+    }
+}
+
 // static
 void LLFloater::onClickMinimize(LLFloater* self)
 {
@@ -2157,6 +2232,15 @@ void LLFloater::onClickDock(LLFloater* self)
     if(self && self->mCanDock)
     {
         self->setDocked(!self->mDocked, true);
+    }
+}
+
+// static
+void LLFloater::onClickPin(LLFloater* self)
+{
+    if (self && self->mCanPin)
+    {
+        self->setPinned(!self->mPinned);
     }
 }
 
@@ -2298,6 +2382,13 @@ void LLFloater::draw()
                     titlebar_focus_color % alpha, 0, true);
             }
         }
+
+        // 1px outline, brighter while this floater is the foreground one
+        // (the same state that picks the opaque background above).
+        static LLUIColor focus_border_color = LLUIColorTable::instance().getColor("FloaterFocusBorderColor");
+        static LLUIColor unfocus_border_color = LLUIColorTable::instance().getColor("FloaterUnfocusBorderColor");
+        const LLColor4 border_color = isBackgroundOpaque() ? focus_border_color : unfocus_border_color;
+        gl_rect_2d(getLocalRect(), border_color % alpha, false);
     }
 
     LLPanel::updateDefaultBtn();
@@ -2675,6 +2766,8 @@ LLUIImage* LLFloater::getButtonImage(const Params& p, EFloaterButton e)
             return p.tear_off_image;
         case BUTTON_DOCK:
             return p.dock_image;
+        case BUTTON_PIN:
+            return p.pin_image;
         case BUTTON_HELP:
             return p.help_image;
     }
@@ -2700,6 +2793,8 @@ LLUIImage* LLFloater::getButtonPressedImage(const Params& p, EFloaterButton e)
             return p.tear_off_pressed_image;
         case BUTTON_DOCK:
             return p.dock_pressed_image;
+        case BUTTON_PIN:
+            return p.pin_pressed_image;
         case BUTTON_HELP:
             return p.help_pressed_image;
     }
@@ -3637,6 +3732,7 @@ void LLFloater::initFromParams(const LLFloater::Params& p)
 // [/SL:KB]
     setCanClose(p.can_close);
     setCanDock(p.can_dock);
+    setCanPin(p.can_pin);
     mResizableWidth = p.can_resize_width;
     mResizableHeight = p.can_resize_height;
     setCanResize(p.can_resize);
