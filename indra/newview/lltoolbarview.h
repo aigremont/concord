@@ -126,6 +126,7 @@ private:
     bool    addCommandInternal(const LLCommandId& commandId, LLToolBar* toolbar);
     void    addToToolset(command_id_list_t& command_list, Toolbar& toolbar) const;
     void    updateAutoHide();
+    void    updateNeocomExpand();
     bool    getAutoHideEnabled(LLToolBarEnums::EToolBarLocation toolbar) const;
     bool    isMouseInRevealZone(LLToolBarEnums::EToolBarLocation toolbar, S32 x, S32 y, S32 active_dim) const;
     void    clearAutoHideOffset(LLToolBarEnums::EToolBarLocation toolbar);
@@ -144,6 +145,13 @@ private:
     bool                mShowToolbars;
     LLView*             mBottomToolbarPanel;
     AutoHideEdge        mAutoHideEdges[LLToolBarEnums::TOOLBAR_COUNT];
+
+    // Neocom-style hover expansion of the left toolbar: while the mouse is over
+    // it the buttons show icons with text, and the button type it was loaded
+    // with (what toolbars.xml keeps) is what it collapses back to.
+    bool                        mNeocomExpanded;
+    LLToolBarEnums::ButtonType  mNeocomBaseButtonType;
+    F64                         mNeocomLastHoverTime;
 };
 
 extern LLToolBarView* gToolBarView;

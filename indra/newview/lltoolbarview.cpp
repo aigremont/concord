@@ -210,7 +210,10 @@ LLToolBarView::LLToolBarView(const LLToolBarView::Params& p)
     mDragToolbarButton(NULL),
     mDragItem(NULL),
     mToolbarsLoaded(false),
-    mBottomToolbarPanel(NULL)
+    mBottomToolbarPanel(NULL),
+    mNeocomExpanded(false),
+    mNeocomBaseButtonType(LLToolBarEnums::BTNTYPE_ICONS_ONLY),
+    mNeocomLastHoverTime(0.0)
 {
     for (S32 i = 0; i < LLToolBarEnums::TOOLBAR_COUNT; i++)
     {
@@ -584,7 +587,11 @@ void LLToolBarView::saveToolbars() const
     LLToolBarView::ToolbarSet toolbar_set;
     if (mToolbars[LLToolBarEnums::TOOLBAR_LEFT])
     {
-        toolbar_set.left_toolbar.button_display_mode = mToolbars[LLToolBarEnums::TOOLBAR_LEFT]->getButtonType();
+        // A hover-expanded left toolbar is showing text only for the moment;
+        // what persists is the type it collapses back to.
+        toolbar_set.left_toolbar.button_display_mode = mNeocomExpanded
+            ? mNeocomBaseButtonType
+            : mToolbars[LLToolBarEnums::TOOLBAR_LEFT]->getButtonType();
         toolbar_set.left_toolbar.button_layout_mode = mToolbars[LLToolBarEnums::TOOLBAR_LEFT]->getLayoutType();
         addToToolset(mToolbars[LLToolBarEnums::TOOLBAR_LEFT]->getCommandsList(), toolbar_set.left_toolbar);
     }
@@ -733,6 +740,7 @@ void LLToolBarView::draw()
 {
     LLRect toolbar_rects[LLToolBarEnums::TOOLBAR_COUNT];
 
+    updateNeocomExpand();
     updateAutoHide();
 
     const bool forced_visible = toolbars_forced_visible();
@@ -882,6 +890,60 @@ void LLToolBarView::updateAutoHide()
         {
             edge.visible_dim = target_dim;
         }
+    }
+}
+
+void LLToolBarView::updateNeocomExpand()
+{
+    LLToolBar* toolbar = mToolbars[LLToolBarEnums::TOOLBAR_LEFT];
+    const AutoHideEdge& edge = mAutoHideEdges[LLToolBarEnums::TOOLBAR_LEFT];
+    // Switching the button type regenerates the buttons, and a drag in progress
+    // holds on to the one it started from, so hold the current state until it ends.
+    if (!toolbar || !edge.panel || isToolDragged())
+    {
+        return;
+    }
+
+    const F64 now = LLFrameTimer::getElapsedSeconds();
+    bool want_expanded = false;
+
+    // Auto-hide slides the same panel in and out; when it owns the left edge,
+    // hover expansion stays out of its way.
+    if (gSavedSettings.getBOOL("AlchemyNeocomHoverExpand")
+        && mShowToolbars
+        && toolbar->hasButtons()
+        && !getAutoHideEnabled(LLToolBarEnums::TOOLBAR_LEFT))
+    {
+        S32 mouse_x = 0;
+        S32 mouse_y = 0;
+        LLUI::getInstance()->getMousePositionLocal(this, &mouse_x, &mouse_y);
+
+        LLRect panel_rect;
+        edge.panel->localRectToOtherView(edge.panel->getLocalRect(), &panel_rect, this);
+        if (panel_rect.pointInRect(mouse_x, mouse_y))
+        {
+            mNeocomLastHoverTime = now;
+        }
+        want_expanded = (now - mNeocomLastHoverTime) <= TOOLBAR_AUTO_HIDE_LINGER;
+    }
+
+    if (want_expanded)
+    {
+        // Entering, or the user picked another mode from the context menu while
+        // expanded: that pick becomes what the toolbar collapses back to. The
+        // toolbar re-lays itself out for the new buttons on idle, and draw()
+        // already fits the layout panel to the toolbar's width every frame.
+        if (!mNeocomExpanded || toolbar->getButtonType() != LLToolBarEnums::BTNTYPE_ICONS_WITH_TEXT)
+        {
+            mNeocomBaseButtonType = toolbar->getButtonType();
+            toolbar->setButtonType(LLToolBarEnums::BTNTYPE_ICONS_WITH_TEXT);
+            mNeocomExpanded = true;
+        }
+    }
+    else if (mNeocomExpanded)
+    {
+        toolbar->setButtonType(mNeocomBaseButtonType);
+        mNeocomExpanded = false;
     }
 }
 
