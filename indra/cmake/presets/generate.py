@@ -116,6 +116,21 @@ def toolchains(generator, display):
 # Per generator: the configure presets, and the hidden platform base each
 # one's build presets inherit (None for a preset that runs anywhere).
 GENERATORS = {
+    'vs2022': ('windows', [
+        {'name': 'vs2022-os', 'displayName': 'Visual Studio 2022',
+         'inherits': ['base', 'windows'], 'generator': 'Visual Studio 17 2022'},
+        {'name': 'vs2022', 'displayName': 'Visual Studio 2022 Proprietary',
+         'inherits': ['vs2022-os', 'proprietary']},
+        {'name': 'vs2022-os-arm64', 'displayName': 'Visual Studio 2022 (arm64)',
+         'inherits': ['vs2022-os', 'windows-arm64']},
+        {'name': 'vs2022-os-x64', 'displayName': 'Visual Studio 2022 (x86_64)',
+         'inherits': ['vs2022-os', 'windows-x64']},
+        {'name': 'vs2022-arm64', 'displayName': 'Visual Studio 2022 Proprietary (arm64)',
+         'inherits': ['vs2022', 'windows-arm64']},
+        {'name': 'vs2022-x64', 'displayName': 'Visual Studio 2022 Proprietary (x86_64)',
+         'inherits': ['vs2022', 'windows-x64']},
+        *fullopt('vs2022', 'Visual Studio 2022', 'windows', ARCHS),
+    ]),
     'vs2026': ('windows', [
         {'name': 'vs2026-os', 'displayName': 'Visual Studio 2026',
          'inherits': ['base', 'windows'], 'generator': 'Visual Studio 18 2026'},

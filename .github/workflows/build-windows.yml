@@ -1,0 +1,129 @@
+name: Build Windows
+
+# Free GitHub-hosted runner only (windows-latest, 4 vCPU). No larger runners.
+#
+# Alchemy builds with CMake + vcpkg (not autobuild): the presets in
+# indra/CMakePresets.json pick the Visual Studio generator, and
+# indra/cmake/BootstrapVcpkg.cmake installs the manifest's ports during the
+# first configure. The ports are the slow part (hours on 4 cores), so the
+# vcpkg binary cache is kept in the Actions cache and saved even when the
+# job fails or times out: a run that only gets partway through the ports
+# still leaves every finished port behind for the next run.
+#
+# Compiler caching for the viewer itself: ccache/sccache do not hook the
+# Visual Studio generator, so the viewer's own objects (about an hour on
+# this runner) are rebuilt every run.
+
+on:
+  push:
+    branches: ["feature/eve-visual-tokens"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-windows-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  VCPKG_ROOT: ${{ github.workspace }}\vcpkg
+  VCPKG_BINARY_SOURCES: "clear;default,readwrite"
+  VCPKG_DEFAULT_BINARY_CACHE: ${{ github.workspace }}\vcpkg-archives
+  VCPKG_TRIPLET: x64-windows-alchemy-avx2-release
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # The presets are CMake preset schema version 10 (CMake 4.0+); the
+      # runner image ships an older CMake.
+      - name: Install CMake 4 and build helpers
+        run: pip install "cmake>=4.0" ninja llsd
+
+      - name: Restore vcpkg binary cache
+        id: vcpkg-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: vcpkg-archives
+          key: vcpkg-windows-x64-${{ hashFiles('indra/vcpkg.json', 'indra/vcpkg-configuration.json', 'indra/cmake/triplets/**', '.gitmodules') }}-${{ github.run_id }}
+          restore-keys: |
+            vcpkg-windows-x64-${{ hashFiles('indra/vcpkg.json', 'indra/vcpkg-configuration.json', 'indra/cmake/triplets/**', '.gitmodules') }}-
+            vcpkg-windows-x64-
+
+      - name: Bootstrap vcpkg
+        run: .\vcpkg\bootstrap-vcpkg.bat
+
+      # windows-latest carries either Visual Studio 2026 (v18) or 2022 (v17);
+      # both have a preset family.
+      - name: Pick the Visual Studio preset
+        id: preset
+        shell: pwsh
+        run: |
+          $vswhere = "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe"
+          $version = & $vswhere -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationVersion
+          Write-Host "Visual Studio $version"
+          $major = [int]($version.Split('.')[0])
+          $preset = if ($major -ge 18) { "vs2026-os-x64" } else { "vs2022-os-x64" }
+          "preset=$preset" >> $env:GITHUB_OUTPUT
+          "build_dir=${{ github.workspace }}\build-Windows-$preset" >> $env:GITHUB_OUTPUT
+
+      # vcpkg installs the ports here. The step has its own limit so that the
+      # cache-save step below still runs inside the job's 6 hour limit.
+      - name: Configure (installs vcpkg ports)
+        timeout-minutes: 300
+        shell: bash
+        run: |
+          set -x
+          cmake -S indra --preset "${{ steps.preset.outputs.preset }}" \
+            -DVCPKG_TARGET_TRIPLET="$VCPKG_TRIPLET" \
+            -DAL_BUILD_VIEWER:BOOL=ON \
+            -DAL_BUILD_TESTS:BOOL=OFF \
+            -DAL_BUILD_PACKAGE:BOOL=OFF \
+            -DAL_USE_VELOPACK:BOOL=OFF \
+            -DAL_USE_LTO:BOOL=OFF \
+            -DAL_USE_TRACY:BOOL=OFF \
+            -DAL_ENABLE_RELEASE_DEBUG_LOGGING:BOOL=OFF \
+            -DAL_ENABLE_CRASH_REPORTING:BOOL=OFF \
+            -DAL_USE_SENTRY:BOOL=OFF \
+            -DAL_CHANNEL:STRING="Concord Test"
+
+      - name: Save vcpkg binary cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: vcpkg-archives
+          key: ${{ steps.vcpkg-cache.outputs.cache-primary-key }}
+
+      - name: Build viewer (Release)
+        shell: bash
+        run: |
+          cmake --build "${{ steps.preset.outputs.build_dir }}" --config Release --parallel 4
+
+      - name: Install viewer tree
+        shell: bash
+        run: |
+          cmake --install "${{ steps.preset.outputs.build_dir }}" --config Release --prefix "$RUNNER_TEMP/app"
+          ls "$RUNNER_TEMP/app"
+
+      - name: Upload viewer
+        uses: actions/upload-artifact@v4
+        with:
+          name: Concord-Windows-x64-${{ github.sha }}
+          path: ${{ runner.temp }}/app
+          if-no-files-found: error
+          compression-level: 6
+          retention-days: 14

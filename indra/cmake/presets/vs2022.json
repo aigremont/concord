@@ -1,0 +1,548 @@
+{
+  "version": 10,
+  "$schema": "https://cmake.org/cmake/help/latest/_downloads/3e2d73bff478d88a7de0de736ba5e361/schema.json",
+  "include": [
+    "base.json"
+  ],
+  "configurePresets": [
+    {
+      "name": "vs2022-os",
+      "displayName": "Visual Studio 2022",
+      "inherits": [
+        "base",
+        "windows"
+      ],
+      "generator": "Visual Studio 17 2022"
+    },
+    {
+      "name": "vs2022",
+      "displayName": "Visual Studio 2022 Proprietary",
+      "inherits": [
+        "vs2022-os",
+        "proprietary"
+      ]
+    },
+    {
+      "name": "vs2022-os-arm64",
+      "displayName": "Visual Studio 2022 (arm64)",
+      "inherits": [
+        "vs2022-os",
+        "windows-arm64"
+      ]
+    },
+    {
+      "name": "vs2022-os-x64",
+      "displayName": "Visual Studio 2022 (x86_64)",
+      "inherits": [
+        "vs2022-os",
+        "windows-x64"
+      ]
+    },
+    {
+      "name": "vs2022-arm64",
+      "displayName": "Visual Studio 2022 Proprietary (arm64)",
+      "inherits": [
+        "vs2022",
+        "windows-arm64"
+      ]
+    },
+    {
+      "name": "vs2022-x64",
+      "displayName": "Visual Studio 2022 Proprietary (x86_64)",
+      "inherits": [
+        "vs2022",
+        "windows-x64"
+      ]
+    },
+    {
+      "name": "vs2022-os-fullopt",
+      "displayName": "Visual Studio 2022 (fully optimized)",
+      "description": "The optimizations of a shipped build on any channel: LTO on, Tracy and Release debug logging off",
+      "inherits": [
+        "vs2022-os",
+        "fullopt"
+      ]
+    },
+    {
+      "name": "vs2022-os-fullopt-arm64",
+      "displayName": "Visual Studio 2022 (fully optimized, arm64)",
+      "inherits": [
+        "vs2022-os-fullopt",
+        "windows-arm64"
+      ]
+    },
+    {
+      "name": "vs2022-os-fullopt-x64",
+      "displayName": "Visual Studio 2022 (fully optimized, x86_64)",
+      "inherits": [
+        "vs2022-os-fullopt",
+        "windows-x64"
+      ]
+    },
+    {
+      "name": "vs2022-fullopt",
+      "displayName": "Visual Studio 2022 Proprietary (fully optimized)",
+      "description": "The optimizations of a shipped build on any channel: LTO on, Tracy and Release debug logging off",
+      "inherits": [
+        "vs2022",
+        "fullopt"
+      ]
+    },
+    {
+      "name": "vs2022-fullopt-arm64",
+      "displayName": "Visual Studio 2022 Proprietary (fully optimized, arm64)",
+      "inherits": [
+        "vs2022-fullopt",
+        "windows-arm64"
+      ]
+    },
+    {
+      "name": "vs2022-fullopt-x64",
+      "displayName": "Visual Studio 2022 Proprietary (fully optimized, x86_64)",
+      "inherits": [
+        "vs2022-fullopt",
+        "windows-x64"
+      ]
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "vs2022-os-debug",
+      "configurePreset": "vs2022-os",
+      "inherits": [
+        "windows",
+        "debug"
+      ]
+    },
+    {
+      "name": "vs2022-os-optdebug",
+      "configurePreset": "vs2022-os",
+      "inherits": [
+        "windows",
+        "optdebug"
+      ]
+    },
+    {
+      "name": "vs2022-os-relwithdebinfo",
+      "configurePreset": "vs2022-os",
+      "inherits": [
+        "windows",
+        "relwithdebinfo"
+      ]
+    },
+    {
+      "name": "vs2022-os-release",
+      "configurePreset": "vs2022-os",
+      "inherits": [
+        "windows",
+        "release"
+      ]
+    },
+    {
+      "name": "vs2022-debug",
+      "configurePreset": "vs2022",
+      "inherits": [
+        "windows",
+        "debug"
+      ]
+    },
+    {
+      "name": "vs2022-optdebug",
+      "configurePreset": "vs2022",
+      "inherits": [
+        "windows",
+        "optdebug"
+      ]
+    },
+    {
+      "name": "vs2022-relwithdebinfo",
+      "configurePreset": "vs2022",
+      "inherits": [
+        "windows",
+        "relwithdebinfo"
+      ]
+    },
+    {
+      "name": "vs2022-release",
+      "configurePreset": "vs2022",
+      "inherits": [
+        "windows",
+        "release"
+      ]
+    },
+    {
+      "name": "vs2022-os-arm64-debug",
+      "configurePreset": "vs2022-os-arm64",
+      "inherits": [
+        "windows",
+        "debug"
+      ]
+    },
+    {
+      "name": "vs2022-os-arm64-optdebug",
+      "configurePreset": "vs2022-os-arm64",
+      "inherits": [
+        "windows",
+        "optdebug"
+      ]
+    },
+    {
+      "name": "vs2022-os-arm64-relwithdebinfo",
+      "configurePreset": "vs2022-os-arm64",
+      "inherits": [
+        "windows",
+        "relwithdebinfo"
+      ]
+    },
+    {
+      "name": "vs2022-os-arm64-release",
+      "configurePreset": "vs2022-os-arm64",
+      "inherits": [
+        "windows",
+        "release"
+      ]
+    },
+    {
+      "name": "vs2022-os-x64-debug",
+      "configurePreset": "vs2022-os-x64",
+      "inherits": [
+        "windows",
+        "debug"
+      ]
+    },
+    {
+      "name": "vs2022-os-x64-optdebug",
+      "configurePreset": "vs2022-os-x64",
+      "inherits": [
+        "windows",
+        "optdebug"
+      ]
+    },
+    {
+      "name": "vs2022-os-x64-relwithdebinfo",
+      "configurePreset": "vs2022-os-x64",
+      "inherits": [
+        "windows",
+        "relwithdebinfo"
+      ]
+    },
+    {
+      "name": "vs2022-os-x64-release",
+      "configurePreset": "vs2022-os-x64",
+      "inherits": [
+        "windows",
+        "release"
+      ]
+    },
+    {
+      "name": "vs2022-arm64-debug",
+      "configurePreset": "vs2022-arm64",
+      "inherits": [
+        "windows",
+        "debug"
+      ]
+    },
+    {
+      "name": "vs2022-arm64-optdebug",
+      "configurePreset": "vs2022-arm64",
+      "inherits": [
+        "windows",
+        "optdebug"
+      ]
+    },
+    {
+      "name": "vs2022-arm64-relwithdebinfo",
+      "configurePreset": "vs2022-arm64",
+      "inherits": [
+        "windows",
+        "relwithdebinfo"
+      ]
+    },
+    {
+      "name": "vs2022-arm64-release",
+      "configurePreset": "vs2022-arm64",
+      "inherits": [
+        "windows",
+        "release"
+      ]
+    },
+    {
+      "name": "vs2022-x64-debug",
+      "configurePreset": "vs2022-x64",
+      "inherits": [
+        "windows",
+        "debug"
+      ]
+    },
+    {
+      "name": "vs2022-x64-optdebug",
+      "configurePreset": "vs2022-x64",
+      "inherits": [
+        "windows",
+        "optdebug"
+      ]
+    },
+    {
+      "name": "vs2022-x64-relwithdebinfo",
+      "configurePreset": "vs2022-x64",
+      "inherits": [
+        "windows",
+        "relwithdebinfo"
+      ]
+    },
+    {
+      "name": "vs2022-x64-release",
+      "configurePreset": "vs2022-x64",
+      "inherits": [
+        "windows",
+        "release"
+      ]
+    },
+    {
+      "name": "vs2022-os-fullopt-debug",
+      "configurePreset": "vs2022-os-fullopt",
+      "inherits": [
+        "windows",
+        "debug"
+      ]
+    },
+    {
+      "name": "vs2022-os-fullopt-optdebug",
+      "configurePreset": "vs2022-os-fullopt",
+      "inherits": [
+        "windows",
+        "optdebug"
+      ]
+    },
+    {
+      "name": "vs2022-os-fullopt-relwithdebinfo",
+      "configurePreset": "vs2022-os-fullopt",
+      "inherits": [
+        "windows",
+        "relwithdebinfo"
+      ]
+    },
+    {
+      "name": "vs2022-os-fullopt-release",
+      "configurePreset": "vs2022-os-fullopt",
+      "inherits": [
+        "windows",
+        "release"
+      ]
+    },
+    {
+      "name": "vs2022-os-fullopt-arm64-debug",
+      "configurePreset": "vs2022-os-fullopt-arm64",
+      "inherits": [
+        "windows",
+        "debug"
+      ]
+    },
+    {
+      "name": "vs2022-os-fullopt-arm64-optdebug",
+      "configurePreset": "vs2022-os-fullopt-arm64",
+      "inherits": [
+        "windows",
+        "optdebug"
+      ]
+    },
+    {
+      "name": "vs2022-os-fullopt-arm64-relwithdebinfo",
+      "configurePreset": "vs2022-os-fullopt-arm64",
+      "inherits": [
+        "windows",
+        "relwithdebinfo"
+      ]
+    },
+    {
+      "name": "vs2022-os-fullopt-arm64-release",
+      "configurePreset": "vs2022-os-fullopt-arm64",
+      "inherits": [
+        "windows",
+        "release"
+      ]
+    },
+    {
+      "name": "vs2022-os-fullopt-x64-debug",
+      "configurePreset": "vs2022-os-fullopt-x64",
+      "inherits": [
+        "windows",
+        "debug"
+      ]
+    },
+    {
+      "name": "vs2022-os-fullopt-x64-optdebug",
+      "configurePreset": "vs2022-os-fullopt-x64",
+      "inherits": [
+        "windows",
+        "optdebug"
+      ]
+    },
+    {
+      "name": "vs2022-os-fullopt-x64-relwithdebinfo",
+      "configurePreset": "vs2022-os-fullopt-x64",
+      "inherits": [
+        "windows",
+        "relwithdebinfo"
+      ]
+    },
+    {
+      "name": "vs2022-os-fullopt-x64-release",
+      "configurePreset": "vs2022-os-fullopt-x64",
+      "inherits": [
+        "windows",
+        "release"
+      ]
+    },
+    {
+      "name": "vs2022-fullopt-debug",
+      "configurePreset": "vs2022-fullopt",
+      "inherits": [
+        "windows",
+        "debug"
+      ]
+    },
+    {
+      "name": "vs2022-fullopt-optdebug",
+      "configurePreset": "vs2022-fullopt",
+      "inherits": [
+        "windows",
+        "optdebug"
+      ]
+    },
+    {
+      "name": "vs2022-fullopt-relwithdebinfo",
+      "configurePreset": "vs2022-fullopt",
+      "inherits": [
+        "windows",
+        "relwithdebinfo"
+      ]
+    },
+    {
+      "name": "vs2022-fullopt-release",
+      "configurePreset": "vs2022-fullopt",
+      "inherits": [
+        "windows",
+        "release"
+      ]
+    },
+    {
+      "name": "vs2022-fullopt-arm64-debug",
+      "configurePreset": "vs2022-fullopt-arm64",
+      "inherits": [
+        "windows",
+        "debug"
+      ]
+    },
+    {
+      "name": "vs2022-fullopt-arm64-optdebug",
+      "configurePreset": "vs2022-fullopt-arm64",
+      "inherits": [
+        "windows",
+        "optdebug"
+      ]
+    },
+    {
+      "name": "vs2022-fullopt-arm64-relwithdebinfo",
+      "configurePreset": "vs2022-fullopt-arm64",
+      "inherits": [
+        "windows",
+        "relwithdebinfo"
+      ]
+    },
+    {
+      "name": "vs2022-fullopt-arm64-release",
+      "configurePreset": "vs2022-fullopt-arm64",
+      "inherits": [
+        "windows",
+        "release"
+      ]
+    },
+    {
+      "name": "vs2022-fullopt-x64-debug",
+      "configurePreset": "vs2022-fullopt-x64",
+      "inherits": [
+        "windows",
+        "debug"
+      ]
+    },
+    {
+      "name": "vs2022-fullopt-x64-optdebug",
+      "configurePreset": "vs2022-fullopt-x64",
+      "inherits": [
+        "windows",
+        "optdebug"
+      ]
+    },
+    {
+      "name": "vs2022-fullopt-x64-relwithdebinfo",
+      "configurePreset": "vs2022-fullopt-x64",
+      "inherits": [
+        "windows",
+        "relwithdebinfo"
+      ]
+    },
+    {
+      "name": "vs2022-fullopt-x64-release",
+      "configurePreset": "vs2022-fullopt-x64",
+      "inherits": [
+        "windows",
+        "release"
+      ]
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "vs2022-os-release",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "vs2022-os"
+        },
+        {
+          "type": "build",
+          "name": "vs2022-os-release"
+        }
+      ]
+    },
+    {
+      "name": "vs2022-release",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "vs2022"
+        },
+        {
+          "type": "build",
+          "name": "vs2022-release"
+        }
+      ]
+    },
+    {
+      "name": "vs2022-os-fullopt-release",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "vs2022-os-fullopt"
+        },
+        {
+          "type": "build",
+          "name": "vs2022-os-fullopt-release"
+        }
+      ]
+    },
+    {
+      "name": "vs2022-fullopt-release",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "vs2022-fullopt"
+        },
+        {
+          "type": "build",
+          "name": "vs2022-fullopt-release"
+        }
+      ]
+    }
+  ]
+}
