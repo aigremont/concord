@@ -24,7 +24,8 @@
                 width="1024"
                 mouse_opaque="false">
     <toolbar layout="topleft"
-             button_panel.bg_opaque_image="Rounded_Rect_Top"
+             button_panel.bg_opaque_image="Window_Background"
+             button_panel.bg_opaque_image_overlay="EvePanelBg"
              name="toolbar_top"
              height="30"
              left="0"
@@ -63,12 +64,13 @@
       <layout_panel name="left_toolbar_panel"
                     auto_resize="false"
                     height="500"
-                    width="30"
+                    width="44"
                     mouse_opaque="false">
         <toolbar follows="left|top|bottom"
-                 button_panel.bg_opaque_image="Rounded_Rect_Right"
+                 button_panel.bg_opaque_image="Window_Background"
+             button_panel.bg_opaque_image_overlay="EvePanelBg"
                  name="toolbar_left"
-                 width="30"
+                 width="44"
                  left="0"
                  top="0"
                  bottom="-1"
@@ -132,7 +134,8 @@
                     width="30"
                     mouse_opaque="false">
         <toolbar
-          button_panel.bg_opaque_image="Rounded_Rect_Left"
+          button_panel.bg_opaque_image="Window_Background"
+             button_panel.bg_opaque_image_overlay="EvePanelBg"
           follows="right|top|bottom"
           name="toolbar_right"
           width="30"
@@ -161,7 +164,8 @@
                 width="1024"
                 mouse_opaque="false">
     <toolbar layout="topleft"
-             button_panel.bg_opaque_image="Rounded_Rect_Top"
+             button_panel.bg_opaque_image="Window_Background"
+             button_panel.bg_opaque_image_overlay="EvePanelBg"
              name="toolbar_bottom"
              height="30"
              left="0"
