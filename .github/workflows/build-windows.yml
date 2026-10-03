@@ -14,9 +14,9 @@ name: Build Windows
 # Visual Studio generator, so the viewer's own objects (about an hour on
 # this runner) are rebuilt every run.
 
+# Manual only: the local build is faster. Run it from the Actions tab when a
+# clean-machine build or a shareable artifact is needed.
 on:
-  push:
-    branches: ["feature/eve-visual-tokens"]
   workflow_dispatch:
 
 permissions:
