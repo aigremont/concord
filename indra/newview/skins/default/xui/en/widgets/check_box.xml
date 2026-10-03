@@ -6,8 +6,8 @@
                         bottom="3" 
                         width="0"
                         height="0"
-                        text_color="LabelTextColor"
-                        text_readonly_color="LabelDisabledColor"/>
+                        text_color="EveText"
+                        text_readonly_color="EveTextDim"/>
   <check_box.check_button name="CheckboxCtrl Button"
                           left="2"
                           bottom="1"

@@ -3,8 +3,8 @@
 			thumb_image_horizontal ="ScrollThumb_Horiz"
             track_image_vertical ="ScrollTrack_Vert"
 			track_image_horizontal ="ScrollTrack_Horiz"
-			track_color="ScrollbarTrackColor"
-            thumb_color="ScrollbarThumbColor"
+			track_color="EvePanelSolidBg"
+            thumb_color="EveText"
             thickness="15"
             tab_stop="false">
   <up_button name="up_button"

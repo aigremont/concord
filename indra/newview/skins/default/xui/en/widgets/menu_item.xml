@@ -1,3 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!-- Use this for the top-level menu styling -->
-<menu_item font="SansSerifLimitedEmojiSmall" />
+<menu_item font="SansSerifLimitedEmojiSmall"
+           enabled_color="EveText"
+           disabled_color="EveTextDim"
+           highlight_bg_color="EveAccentBlue_35"
+           highlight_fg_color="White" />

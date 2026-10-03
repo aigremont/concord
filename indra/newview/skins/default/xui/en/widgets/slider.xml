@@ -5,8 +5,8 @@
         volume="false"
         mouse_opaque="true" 
         show_text="true" 
-        text_color="LabelTextColor" 
-        text_disabled_color="LabelDisabledColor">
+        text_color="EveText" 
+        text_disabled_color="EveTextDim">
   <slider.value_editor name="slider editor" 
                        follows="left|bottom"/>
   <slider.value_text name="slider text" 

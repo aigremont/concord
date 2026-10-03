@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<menu_item_separator enabled_color="MenuItemEnabledColor"
+<menu_item_separator enabled_color="EveText"
                      name="separator"
-                     disabled_color="MenuItemDisabledColor"
-                     highlight_bg_color="MenuItemHighlightBgColor"
+                     disabled_color="EveBorderDim"
+                     highlight_bg_color="EveAccentBlue_35"
                      highlight_fg_color="MenuItemHighlightFgColor"
                      label="-----------">
 </menu_item_separator>

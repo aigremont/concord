@@ -2,6 +2,7 @@
 <menu_bar
 			tear_off = "false"
 			keep_fixed_size = "true"
+			bg_color = "MenuDefaultBgColor"
 			horizontal_layout = "true"
 			visible = "true"
 			drop_shadow = "false"/>

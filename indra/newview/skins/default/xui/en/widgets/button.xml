@@ -11,7 +11,7 @@
         image_top_pad="0"
         image_bottom_pad="0"
         imgoverlay_label_space="1"
-        label_color="White"
+        label_color="EveText"
         label_color_selected="ButtonLabelSelectedColor"
         label_color_disabled="ButtonLabelDisabledColor"
         label_color_disabled_selected="ButtonLabelSelectedDisabledColor"
