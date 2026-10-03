@@ -149,10 +149,6 @@ GENERATORS = {
          'inherits': ['ninja', 'macos', 'macos-x64']},
         *fullopt('ninja', 'Ninja Multi-Config', 'macos', ARCHS, platform_base=True, default_config='Release'),
         *toolchains('ninja', 'Ninja Multi-Config'),
-        {'name': 'ninja-os-mold-ccache', 'displayName': 'Ninja Multi-Config (mold, ccache)',
-         'description': 'The Linux developer loop: mold links, ccache hides unchanged objects across '
-                        'configure directories and machines (point CCACHE_DIR at shared storage)',
-         'inherits': ['ninja-os-mold', 'ccache']},
     ]),
     'xcode': ('macos', [
         {'name': 'xcode-os', 'displayName': 'Xcode',

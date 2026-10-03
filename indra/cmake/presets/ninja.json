@@ -309,15 +309,6 @@
         "clang",
         "mold"
       ]
-    },
-    {
-      "name": "ninja-os-mold-ccache",
-      "displayName": "Ninja Multi-Config (mold, ccache)",
-      "description": "The Linux developer loop: mold links, ccache hides unchanged objects across configure directories and machines (point CCACHE_DIR at shared storage)",
-      "inherits": [
-        "ninja-os-mold",
-        "ccache"
-      ]
     }
   ],
   "buildPresets": [
@@ -1326,34 +1317,6 @@
       "configurePreset": "ninja-fullopt-clang-mold",
       "inherits": [
         "linux",
-        "release"
-      ]
-    },
-    {
-      "name": "ninja-os-mold-ccache-debug",
-      "configurePreset": "ninja-os-mold-ccache",
-      "inherits": [
-        "debug"
-      ]
-    },
-    {
-      "name": "ninja-os-mold-ccache-optdebug",
-      "configurePreset": "ninja-os-mold-ccache",
-      "inherits": [
-        "optdebug"
-      ]
-    },
-    {
-      "name": "ninja-os-mold-ccache-relwithdebinfo",
-      "configurePreset": "ninja-os-mold-ccache",
-      "inherits": [
-        "relwithdebinfo"
-      ]
-    },
-    {
-      "name": "ninja-os-mold-ccache-release",
-      "configurePreset": "ninja-os-mold-ccache",
-      "inherits": [
         "release"
       ]
     }
