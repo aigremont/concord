@@ -283,7 +283,7 @@
      value="0.114 0.65 0.1" />
     <color
      name="ColorDropShadow"
-     reference="Black_50" />
+     reference="Transparent" />
     <color
      name="ColorPaletteEntry01"
      reference="Black" />
