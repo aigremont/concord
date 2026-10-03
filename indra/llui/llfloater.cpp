@@ -3462,6 +3462,11 @@ void LLFloaterView::draw()
 
 LLRect LLFloaterView::getSnapRect() const
 {
+    if (mSnapRectFrozen)
+    {
+        return mLastSnapRect;
+    }
+
     LLRect snap_rect = getLocalRect();
 
     LLView* snap_view = mSnapView.get();

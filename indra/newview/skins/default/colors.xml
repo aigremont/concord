@@ -6,10 +6,10 @@
 	<!-- EVE Online (2013) UI palette. Edit these; everything below references them. -->
 	<color
 	 name="EvePanelBg"
-	 value="0.039 0.047 0.055 0.78" />
+	 value="0.039 0.047 0.055 0.92" />
 	<color
 	 name="EvePanelFocusBg"
-	 value="0.071 0.082 0.094 0.90" />
+	 value="0.071 0.082 0.094 0.97" />
 	<color
 	 name="EvePanelSolidBg"
 	 value="0.071 0.082 0.094 1" />
@@ -25,6 +25,9 @@
 	<color
 	 name="EveTextDim"
 	 value="0.541 0.561 0.580 1" />
+	<color
+	 name="EveTextDisabled"
+	 value="0.42 0.44 0.46 1" />
 	<color
 	 name="EveAccentBlue"
 	 value="0.373 0.706 0.910 1" />
@@ -478,7 +481,7 @@
      reference="White" />
     <color
      name="ComboListBgColor"
-     reference="DkGray" />
+     reference="EvePanelSolidBg" />
     <color
      name="ConsoleBackground"
      reference="Black" />
@@ -625,7 +628,7 @@
      reference="EmphasisColor" />
     <color
      name="LabelDisabledColor"
-     reference="White_25" />
+     reference="EveTextDisabled" />
     <color
      name="LabelSelectedColor"
      reference="White" />
@@ -972,19 +975,19 @@
      value="0.15 0.21 0.27 1" />
     <color
      name="TextBgFocusColor"
-     reference="White" />
+     reference="EvePanelFocusBg" />
     <color
      name="TextBgHighlightColor"
      value="0.95 0.90 0 1" />
     <color
      name="TextBgReadOnlyColor"
-	 reference="White_05" />
+	 reference="EvePanelSolidBg" />
     <color
      name="TextBgWriteableColor"
-     reference="LtGray" />
+     reference="EvePanelSolidBg" />
     <color
      name="TextCursorColor"
-     reference="Black" />
+     reference="EveText" />
     <color
      name="TextDefaultColor"
      reference="Black" />
@@ -996,7 +999,7 @@
      reference="Unused?" />
     <color
      name="TextFgColor"
-     value="0.102 0.102 0.102 1" />
+     reference="EveText" />
     <color
      name="TextFgReadOnlyColor"
      reference="EveText" />

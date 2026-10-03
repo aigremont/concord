@@ -690,10 +690,17 @@ public:
 
     void setToolbarRect(LLToolBarEnums::EToolBarLocation tb, const LLRect& toolbar_rect);
 
+    // While frozen, getSnapRect() keeps returning the last settled snap rect,
+    // so a transient layout change (the left toolbar expanding under the
+    // mouse) does not push floaters around.
+    void setSnapRectFrozen(bool frozen) { mSnapRectFrozen = frozen; }
+    bool isSnapRectFrozen() const { return mSnapRectFrozen; }
+
 private:
     void hiddenFloaterClosed(LLFloater* floater);
 
     LLRect              mLastSnapRect;
+    bool                mSnapRectFrozen{ false };
     LLRect              mToolbarLeftRect;
     LLRect              mToolbarBottomRect;
     LLRect              mToolbarRightRect;

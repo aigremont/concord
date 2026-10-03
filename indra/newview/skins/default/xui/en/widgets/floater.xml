@@ -21,7 +21,7 @@
  collapse_image="Icon_Collapse_Foreground"
  tear_off_image="tearoffbox.tga"
  dock_image="Icon_Dock_Foreground"
- pin_image="Icon_Dock_Foreground"
+ pin_image="Icon_Pin_Foreground"
  help_image="Icon_Help_Foreground"
  close_pressed_image="Icon_Close_Press"
  restore_pressed_image="Icon_Restore_Press"
@@ -29,7 +29,7 @@
  collapse_pressed_image="Icon_Collapse_Press"
  tear_off_pressed_image="tearoff_pressed.tga"
  dock_pressed_image="Icon_Dock_Press"
- pin_pressed_image="Icon_Dock_Press"
+ pin_pressed_image="Icon_Pin_Press"
  help_pressed_image="Icon_Help_Press"
  focus_root="true"
   />

@@ -44,6 +44,7 @@
 #include "llxmlnode.h"
 
 #include "llagent.h"  // HACK for destinations guide on startup
+#include "llfloater.h"
 #include "llfloaterreg.h"  // HACK for destinations guide on startup
 #include "llviewercontrol.h"  // HACK for destinations guide on startup
 #include "llinventorymodel.h" // HACK to disable starter avatars button for NUX
@@ -935,6 +936,12 @@ void LLToolBarView::updateNeocomExpand()
         // already fits the layout panel to the toolbar's width every frame.
         if (!mNeocomExpanded || toolbar->getButtonType() != LLToolBarEnums::BTNTYPE_ICONS_WITH_TEXT)
         {
+            // The expanded toolbar overlays the world; floaters keep the
+            // snap region of the collapsed one and do not get pushed aside.
+            if (gFloaterView)
+            {
+                gFloaterView->setSnapRectFrozen(true);
+            }
             mNeocomBaseButtonType = toolbar->getButtonType();
             toolbar->setButtonType(LLToolBarEnums::BTNTYPE_ICONS_WITH_TEXT);
             mNeocomExpanded = true;
@@ -944,6 +951,10 @@ void LLToolBarView::updateNeocomExpand()
     {
         toolbar->setButtonType(mNeocomBaseButtonType);
         mNeocomExpanded = false;
+        if (gFloaterView)
+        {
+            gFloaterView->setSnapRectFrozen(false);
+        }
     }
 }
 
